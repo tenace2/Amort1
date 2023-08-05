@@ -1,0 +1,4 @@
+input.ui-slider-input,
+.ui-field-contain input.ui-slider-input { width: 61px; }
+input.ui-slider-input.ui-mini,
+.ui-field-contain input.ui-slider-input.ui-mini { width: 61px; }

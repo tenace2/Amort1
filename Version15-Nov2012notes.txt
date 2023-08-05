@@ -1,0 +1,150 @@
+Notes for version 13 and 14 August & Oct 2012, and pending version 15 Nov 2012
+This version is NOT YET up on following url:
+http://www.simdock.com/amort-test/dev-silver/amort/m.Amort.html
+
+August Fixes
+Fixed a small bug/feature on the payment schedule,
+...but note the payment schedule list still will not add up very well because of rounding issues,
+...also noted the small bug is not really fixed,
+...
+
+Upgraded the jQuery Mobile versions
+
+Changed the interest pick list to a slider with three decimal place accuracy.
+
+Changing to Michael Goodwin Icon...but his didn't initially work as the file size was way off,
+...then were corrected.
+Note my attempts to alter back to a slightly different version of the free icon from creative-commons was very rough and needed huge refinement to look a better.
+After update of icons to Michael Goodwins, then needed to also update powerpoint documentation (version 5),
+...and upload to Google Docs, then change link on page.
+
+October Fixes
+Also noticed again in Oct 2012 the jquery library needs to be at least 1.7, and that better yet should simply upgrade to jquery mobile 1.2 and jquery 1.8
+
+Also, mentioned in documentation link about the png optomizer
+
+Corrected comment about 0.125% vs 0.25%
+
+Added feature to check if localStorage has anything in it :-)
+...then use local storage, rather than re-initialize all the values.
+...but also had to put a refresh feature on page1 initialize.
+
+
+
+November 2012
+Also, needed to add feature for settings for amount range.
+Adding ability to set an amount range setting for the Min & Max loan amount,
+...this makes it a bit easier to use the slider,
+...but somewhat affects the following:
+  - Extra Payment page: currently max is $1K...but on a $5million house $1K extra a month doesn't make sense
+  - Affordable Payment page: currently max is $5K...but if looking at $1million + house, max $5K a month doesn't make much sense.
+For loans less than $300K resonable defaults seems to be:
+Extra Payment max: $1K 
+Affordable Payment: $5K 
+
+Note on Extra Payment:
+Until there is a "should I refi" feature, the min value should probably default to zero,
+...this is because the Pay Schedule extra listing will show an running balance
+    Principle | Interest   | Balance
+1 | $144.09 | $333.33 | $99,855.91
+2 | $144.57 | $332.85 | $99,711.35
+3 | $145.05 | $332.37 | $99,566.30
+4 | $145.53 | $331.89 | $99,420.78
+If you know principle still owed, can then add up interest remaining from there down,
+and this remaining interest will be the 'break even' point for any refi on whats owed.
+
+The regular payment schedule shows just payment schedule
+Principle + Interest = Payment
+1 : $144.09 + $333.33 = $477.42
+2 : $144.57 + $332.85 = $477.42
+3 : $145.05 + $332.37 = $477.42
+4 : $145.53 + $331.89 = $477.42
+
+An argument for making resetting the min extra payment at higher loans is:
+...will have a more rational smoother slider...but not by much,
+...so still created the 'LSextrapaymntmin' and set too zero,
+...that way will be there later, if want it.
+
+
+Here is the rational:
+Low
+$1K to $50K 
+- defaults $25K...at 4% - 30 yr, mnthly payment: $119
+- $1k - 1% - 30 yr, min mnthly paymet: $3 bucks
+- $50K - 9% - 10 yr, max mnthly payment: $633
+Extra Payment max: $1K 
+Affordable Payment: min 0, max $5K 
+
+Medium
+$20K to $300K 
+- defaults $100K...at 4% - 30 yr, mnthly payment: $477
+- $20K  - 1% - 30 yr, min mnthly payment: $64
+- $300K - 9% - 10 yr, max mnthly payment: $3800
+Extra Payment max: $1K 
+Affordable Payment: min 0, max $5K 
+
+Moderate
+$200K to $600K 
+- defaults $300K...at 4% - 30 yr, mnthly payment: $1432
+- $200K - 1% - 30 yr, min mnthly payment: $643
+- $600K - 9% - 10 yr, max mnthly payment: $7600
+Extra Payment max: $2K 
+Affordable Payment: min 200, max $10K 
+
+Upper
+$500K to $1.5m
+- defaults $1M...at 4% - 30 yr, mnthly payment: $4774
+- $500K - 1% - 30 yr, min mnthly payment: $1608
+- $1.5m - 9% - 10 yr, max mnthly payment: $19001
+Extra Payment max: $5K
+Affordable Payment: min $1k max $30K
+
+High
+$1m to $5m 
+- defaults $2.5m...at 4% - 30 yr, mnthly payment: $11935
+- $1m - 1% - 30 yr, min mnthly payment: $3216
+- $5m - 9% - 10 yr, max mnthly payment: $63337
+Extra Payment max: $12K
+Affordable Payment: min $2K max $80K
+
+To make the above defaults happen for the Extra Payment max slider (on page5), and the Affodable Payment max slider (on page7), had to:
+A.)-Created new local storage defaults for affordable payments and extrapayment
+
+B.)-Augmented the page5 live event 'pagebeforeshow' to refresh the slider extrapayment,
+  //new default for Extra Payment amount, page5
+  //localStorage.setItem('LSextrapaymntmax', 1000);
+  //localStorage.setItem('LSextrapaymntmin', 0);
+  
+B.1) Augment page5 live event for slider min-max labels
+   Also augmented slider with Min-Max amounts at end of slider, per following forum post:
+   https://forum.jquery.com/topic/how-do-i-add-text-labels-below-slider
+   
+C.)-Augment page7 live event 'pageshow' to refresh the slider afforable payment,
+    ...the page7 pageshow event was originally established to insure whatever was in localStorage.LSmonthlypayment was defaulted.
+  //new defaults for affordable payment amounts page7 
+  //localStorage.setItem('LSaffordablemnthpaymnt', 477);
+  //localStorage.setItem('LSaffordablemnthpaymntmin', 0);
+  //localStorage.setItem('LSaffordablemnthpaymntmax', 5000);
+
+C.1) Augmented page7 live event for affordable payment slider min-max labels
+
+C.2) Augmented page7 with new css 'mylistingclass' style to show affordable listing as courier text.
+
+
+D.)-Created new page8 live event 'pagebeforehide' to store above local storage settings depending on bracket button.
+
+E.)-Augmented the page1 live event 'pageshow' to augment amount slider with Min-Max amounts at end of slider.
+
+F.)-Augment the page3 Payment chart with interest setting at left and right???...not doing
+
+G.)-Issue with the label font: Fixed!
+http://www.simdock.com/amort-test/dev-scratch/amort/scratchtesting-Slider-label-font-issue.html
+fix was to do inline adjustment: text-shadow:none; color:black; font-weight:normal
+ 
+H.)-Page 6 - ExtraPaymentSchedule.html
+Changed font on the schedule to courier size 8 with a css style alteration in the head 
+
+I.)-Slider data entry window size: customsliderinputsize.css
+Had to open this up a little bit wider, 61px seems to be optomium.
+
+Also, need to do a copywrite.
